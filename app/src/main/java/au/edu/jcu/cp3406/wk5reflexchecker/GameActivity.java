@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -75,11 +78,17 @@ public class GameActivity extends AppCompatActivity {
         TableRow checkboxes = lastChild.findViewById(R.id.checkboxes);
 
         int count = checkboxes.getChildCount();
+        Set<Integer> randNums = new HashSet<>();
+
+        while (randNums.size() != count) {
+            randNums.add(random.nextInt(newText.length));
+        }
+        Iterator<Integer> itr = randNums.iterator();
 
         for (int i = 0; i < count; i++) {
             View singleBox = checkboxes.getChildAt(i);
             CheckBox box = singleBox.findViewById(singleBox.getId());
-            box.setText(newText[random.nextInt(newText.length)]);
+            box.setText(newText[itr.next()]);
             box.setChecked(random.nextBoolean());
         }
     }
@@ -108,7 +117,27 @@ public class GameActivity extends AppCompatActivity {
     public void checkTasks(View view) {
         timer.stop();
         handler.removeCallbacks(runnable);
+
+        ViewGroup gameRows = findViewById(R.id.game_rows);
+        int numRows = gameRows.getChildCount();            //-1 Don't include DONE button??
+        boolean[][] selected = new boolean[11][3];
+
+        for (int i = 1; i < numRows; i=i+2) {
+            View boxesRow = gameRows.getChildAt(i);
+            TableRow checkboxes = boxesRow.findViewById(R.id.checkboxes);
+            for (int j = 0; j < checkboxes.getChildCount(); j++) {
+                View singleBox = checkboxes.getChildAt(j);
+                CheckBox box = singleBox.findViewById(singleBox.getId());
+                if (i == 1) { selected[i-1][j] = box.isChecked(); }
+                else { selected[i-2][j] = box.isChecked(); }
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            System.out.println("Row" + i + "----------------------------------------------------------");
+            for (int j = 0; j < 3; j++) {
+                System.out.println(selected[i][j] + "----------------------------------------------------------");
+            }
+        }
     }
-
-
 }

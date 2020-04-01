@@ -19,7 +19,9 @@
     </string-array>
     <string-array name="drinks">
         <item>Soft Drink</item>
+        <item>Cordial</item>
         <item>Juice</item>
+        <item>Wine</item>
         <item>Water</item>
         <item>Beer</item>
     </string-array>
@@ -27,5 +29,8 @@
         <item>Apple</item>
         <item>Orange</item>
         <item>Banana</item>
+        <item>Strawberry</item>
+        <item>Mango</item>
+        <item>Pear</item>
     </string-array>
 </resources>
