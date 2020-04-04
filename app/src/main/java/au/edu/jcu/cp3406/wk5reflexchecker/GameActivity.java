@@ -1,7 +1,10 @@
 package au.edu.jcu.cp3406.wk5reflexchecker;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -9,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,7 +60,6 @@ public class GameActivity extends AppCompatActivity {
                 drinksOrFruits.add("fruits");
             }
         }
-
         addButton();
         startTimer();
     }
@@ -128,14 +131,22 @@ public class GameActivity extends AppCompatActivity {
 
     public void checkAnswers(View view) {
         boolean[][] usersChoice;
+        Context context = getApplicationContext();
+        String notDonemsg = "That's not correct!!\nKeep going";
 
-        timer.stop();
         handler.removeCallbacks(runnable);
         usersChoice = getInput();
         if (checkTask(usersChoice)) {
+            timer.stop();
             System.out.println("The task is complete!");
+            Intent intent = new Intent(this, results.class);
+            intent.putExtra("time", timer.toString());
+            startActivityForResult(intent, results.SETTINGS_REQUEST);
         } else {
             System.out.println("The task is IN-complete!");
+            Toast notDone = Toast.makeText(context, notDonemsg, Toast.LENGTH_LONG);
+            notDone.setGravity(Gravity.CENTER, 0, 0);
+            notDone.show();
         }
     }
 
