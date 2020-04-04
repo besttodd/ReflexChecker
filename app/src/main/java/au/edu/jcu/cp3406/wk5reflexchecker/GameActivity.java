@@ -6,13 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -31,6 +35,8 @@ public class GameActivity extends AppCompatActivity {
     Runnable runnable;
     final Stopwatch timer = new Stopwatch();
 
+    List<String> drinksOrFruits = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +47,14 @@ public class GameActivity extends AppCompatActivity {
 
         for (int i = 0; i < 5; i++) {
             addImage();
-            if (random.nextBoolean()) { addCheckboxes(R.array.drinks); }
-            else { addCheckboxes(R.array.fruits); }
+            if (random.nextBoolean()) {
+                addCheckboxes(R.array.drinks);
+                drinksOrFruits.add("drinks");
+            }
+            else {
+                addCheckboxes(R.array.fruits);
+                drinksOrFruits.add("fruits");
+            }
         }
 
         addButton();
@@ -114,30 +126,139 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    public void checkTasks(View view) {
+    public void checkAnswers(View view) {
+        boolean[][] usersChoice;
+
         timer.stop();
         handler.removeCallbacks(runnable);
+        usersChoice = getInput();
+        if (checkTask(usersChoice)) {
+            System.out.println("The task is complete!");
+        } else {
+            System.out.println("The task is IN-complete!");
+        }
+    }
 
+    boolean[][] getInput() {
         ViewGroup gameRows = findViewById(R.id.game_rows);
-        int numRows = gameRows.getChildCount();            //-1 Don't include DONE button??
-        boolean[][] selected = new boolean[11][3];
+        int numRows = gameRows.getChildCount();
+        boolean[][] selected = new boolean[5][3];
+        int index = 0;
 
-        for (int i = 1; i < numRows; i=i+2) {
+
+        for (int i = 0; i < numRows; i++) {
             View boxesRow = gameRows.getChildAt(i);
-            TableRow checkboxes = boxesRow.findViewById(R.id.checkboxes);
-            for (int j = 0; j < checkboxes.getChildCount(); j++) {
-                View singleBox = checkboxes.getChildAt(j);
-                CheckBox box = singleBox.findViewById(singleBox.getId());
-                if (i == 1) { selected[i-1][j] = box.isChecked(); }
-                else { selected[i-2][j] = box.isChecked(); }
+            if (boxesRow instanceof TableRow) {
+                TableRow checkboxes = boxesRow.findViewById(R.id.checkboxes);
+                System.out.println("Row" + i + "-------------------------------------------------------");
+                for (int j = 0; j < checkboxes.getChildCount(); j++) {
+                    View singleBox = checkboxes.getChildAt(j);
+                    CheckBox box = singleBox.findViewById(singleBox.getId());
+                    selected[index][j] = box.isChecked();
+                }
+                index++;
             }
         }
 
-        for (int i = 0; i < 7; i++) {
-            System.out.println("Row" + i + "----------------------------------------------------------");
-            for (int j = 0; j < 3; j++) {
-                System.out.println(selected[i][j] + "----------------------------------------------------------");
+        for (int i=0; i<5; i++) {
+            System.out.println("Row" + i + "-------------------------------------------------------");
+            for (int j=0; j<3; j++) {
+                System.out.println("==" + selected[i][j] + "-------------------------------------------------------");
             }
         }
+
+        return selected;
+    }
+
+    boolean checkTask(boolean[][] userInput) {
+        TextView task1View = findViewById(R.id.task1);
+        String task1 = task1View.getText().toString();
+        TextView task2View = findViewById(R.id.task2);
+        String task2 = task2View.getText().toString();
+        boolean correct = false;
+        int dCount = 0;
+        int fCount = 0;
+
+        outerLoop:
+        for (int i = 0; i < 5; i++) {
+            if (drinksOrFruits.get(i).equals("drinks")) {
+                switch (task1) {
+                    case "Select all drinks":
+                        for (int j = 0; j < 3; j++) {
+                            if (!userInput[i][j]) {
+                                correct = false;
+                                break outerLoop;
+                            }
+                            correct = true;
+                        }
+                        break;
+                    case "Deselect all drinks":
+                        for (int j = 0; j < 3; j++) {
+                            if (userInput[i][j]) {
+                                correct = false;
+                                break;
+                            }
+                            correct = true;
+                        }
+                        break;
+                    case "Select one drink":
+                        for (int j = 0; j < 3; j++) {
+                            if (userInput[i][j]) {
+                                dCount++;
+                            }
+                        }
+                        if (dCount > 1) {
+                            correct = false;
+                            break outerLoop;
+                        } else {
+                            correct = true;
+                        }
+                        break;
+                }
+            } else {
+                switch (task2) {
+                    case "Select all fruits":
+                        for (int j = 0; j < 3; j++) {
+                            if (!userInput[i][j]) {
+                                correct = false;
+                                break outerLoop;
+                            }
+                            correct = true;
+                        }
+                        break;
+                    case "Deselect all fruits":
+                        for (int j = 0; j < 3; j++) {
+                            if (userInput[i][j]) {
+                                correct = false;
+                                break outerLoop;
+                            }
+                            correct = true;
+                        }
+                        break;
+                    case "Select one fruit":
+                        for (int j = 0; j < 3; j++) {
+                            if (userInput[i][j]) {
+                                fCount++;
+                            }
+                        }
+                        if (fCount > 1) {
+                            correct = false;
+                            break outerLoop;
+                        } else {
+                            correct = true;
+                        }
+                        break;
+                }
+            }
+        }
+
+        if (task1.equals("Select one")) {
+            if (dCount == 0) { correct = false; }
+        }
+        if (task2.equals("Select one")) {
+            if (fCount == 0) { correct = false; }
+        }
+
+        return correct;
     }
 }
