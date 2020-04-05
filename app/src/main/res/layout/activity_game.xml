@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFEB3B"
     android:padding="16dp"
     tools:context=".GameActivity">
 
@@ -14,13 +13,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/task_1" />
+            android:text="@string/task_1"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/task1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textSize="18sp" />
 
         <FrameLayout
             android:layout_height="wrap_content"
@@ -32,8 +33,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="20dp"
-                android:textSize="22sp"
-                android:text="TIME" />
+                android:paddingStart="0dp"
+                android:textSize="22sp" />
 
         </FrameLayout>
 
@@ -46,26 +47,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/task_2" />
+            android:text="@string/task_2"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/task2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textSize="18sp" />
     </TableRow>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#4CAF50">
+        android:layout_weight="1">
 
         <TableLayout
             android:id="@+id/game_rows"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#009688"
             android:orientation="vertical" />
 
     </ScrollView>

@@ -3,6 +3,5 @@
     android:id="@+id/image"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="#3F51B5"
     android:contentDescription="@string/random_image_spacer"
     android:src="@drawable/baseline_android_black_48" />
